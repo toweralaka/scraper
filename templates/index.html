@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+<link type="text/css" rel="stylesheet" href="{% static 'css/index.css' %}">
+{% endblock %}
+{% block content %}
+<section>
+    <div class="form_div">
+        <form method="post">{% csrf_token %}
+            <p>Enter URL to scrape</p>
+            <input name="url" type="url" required placeholder="https://..."/>
+            <button>GO</button>
+        </form>
+    </div>
+</section>
+{% endblock %}
