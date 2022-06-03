@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+<link type="text/css" rel="stylesheet" href="{% static 'css/index.css' %}">
+{% endblock %}
+{% block content %}
+<section>
+    <div class="main__head">
+        <h1>SUMMARY</h1>
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <td><h2>Name</h2></td>
+                <td><h2>Price</h2></td>
+                <td>
+                    <h2>Average Rating</h2>
+                </td>
+                <td><h2>Review</h2></td>
+            </tr>
+        </thead>
+        <tr>
+            <td colspan="4"><h3>Highest Charge</h3></td>
+        </tr>
+        {% for hotel in highest_rate %}
+        <tr>
+            <td>{{ hotel.hotel.name }}</td>
+            <td>{{ hotel.price }}</td>
+            <td>{{ hotel.hotel.average_rating }}</td>
+            <td>
+                {{ hotel.hotel.hotelreview_set.first.review }}
+                {% for review in hotel.hotel.hotelreview_set.first.review %}
+                {% endfor %}
+            </td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="4"><h3>Lowest Charge</h3></td>
+        </tr>
+        {% for hotel in lowest_rate %}
+        <tr>
+            <td>{{ hotel.hotel.name }}</td>
+            <td>{{ hotel.price }}</td>
+            <td>{{ hotel.hotel.average_rating }}</td>
+            <td>
+                {{ hotel.hotel.hotelreview_set.first.review }}
+                {% for review in hotel.hotel.hotelreview_set.first.review %}
+                {% endfor %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <div id="chart_container">
+        <canvas id="hotel-chart"></canvas>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+    <script>
+        let someColors = ['#dd3030','#b9bf11','#0eb00c','#0d7e88','#2e22d1']
+        let someColorsGrey = ['#a7b3af','#73857f','#536861','#1e2825','#ecfef8',]
+        let allColors = []
+        let allColorsGrey = []
+        let allData = {{ data_price | safe }}
+        for(let i=0; i<allData.length; i++){
+            for(let j=0; j<someColors.length; j++){
+                allColors.push(someColors[j])
+                if(j==someColors.length){
+                    j=0
+                }
+            }
+        }
+        for (let i = 0; i < allData.length; i++) {
+                for (let j = 0; j < someColorsGrey.length; j++) {
+                    allColorsGrey.push(someColorsGrey[j])
+                    if (j == someColors.length) {
+                        j = 0
+                    }
+                }
+            }
+        let config = {
+                type: 'bar',
+                data: {
+                    labels: {{ labels | safe }},
+                    datasets: [{
+                        label: 'Prices',
+                        backgroundColor: allColors,
+                        data: {{ data_price | safe }}
+                    },
+                    {
+                        label: 'Rating',
+                        backgroundColor: allColorsGrey,
+                        data: {{ data_rating | safe }}
+                    }
+                ]
+                },
+                options: {
+                    responsive: true,
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Hotel Prices Bar Chart'
+                    }
+                }
+            }        
+
+        window.onload = function () {
+                let ctx = document.getElementById('hotel-chart').getContext('2d');
+                new Chart(ctx, config);
+            };
+    </script>
+</section>
+{% endblock %}

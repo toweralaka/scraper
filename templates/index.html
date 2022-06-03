@@ -5,11 +5,23 @@
 {% endblock %}
 {% block content %}
 <section>
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+            {% endfor %}
+    </ul>
+    {% endif %}
     <div class="form_div">
-        <form method="post">{% csrf_token %}
-            <p>Enter URL to scrape</p>
-            <input name="url" type="url" required placeholder="https://..."/>
-            <button>GO</button>
+        <div class="link__div">
+            <a class="link__btn" href="{% url 'summary' %}">VIEW DATA</a><br/>
+        </div>
+        <form method="post" action="{% url 'scrape' %}">{% csrf_token %}
+            <p>Scrape booking.com(Netherlands)</p>
+            <button>GET HOTELS' DATA</button>
+        </form>
+        <form method="post" action="{% url 'update' %}">{% csrf_token %}
+            <button>GET TODAY'S PRICES</button>
         </form>
     </div>
 </section>

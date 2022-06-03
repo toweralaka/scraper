@@ -1,2 +1,7 @@
 .env
 media/
+
+core_hotelprice.csv
+demofile2.txt
+out.txt
+old.py
